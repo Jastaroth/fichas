@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+***** BEGIN LICENSE BLOCK *****
+Copyright (c) 1998-2021 by Richard A. Wilkes. All rights reserved.
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, version 2.0. If a copy of the MPL was not distributed with
+this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+This Source Code Form is "Incompatible With Secondary Licenses", as
+defined by the Mozilla Public License, version 2.0.
+***** END LICENSE BLOCK *****
+-->
+<head>
+    <meta charset="utf-8" />
+    <title>Jerrell Natalizio</title>
+    <script src="https://kit.fontawesome.com/b74c5174c2.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wghtUnidentified key: '400';700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Roboto, sans-serif;
+            font-size: small;
+            font-weight: normal;
+            padding: 0;
+            margin: .25in;
+            margin-bottom: calc(.25in - 1em);
+        }
+
+        #sheet {
+            display: grid;
+            grid-template:
+                "personal personal"
+                "stats stats"
+                "reactions conditional_modifiers"
+"melee melee"
+"ranged ranged"
+"advantages skills"
+"spells spells"
+"equipment equipment"
+"other_equipment other_equipment"
+"notes notes"
+ ;
+            grid-gap: .05in;
+        }
+
+        #footer {
+            text-align: center;
+            font-size: 80%;
+        }
+
+        .fieldblock {
+            display: grid;
+            grid-template-columns: 0fr 1fr;
+            align-items: end;
+            padding-bottom: .15em;
+        }
+
+        .fieldblock hr {
+            grid-column: 1 / span 2;
+            width: 100%;
+            border: none;
+            background-color: black;
+            height: 1px;
+            margin: 0;
+            margin-top: .2em;
+            margin-bottom: .1em;
+        }
+
+        .fieldblock3 {
+            display: grid;
+            grid-template-columns: 0fr 1fr 0fr;
+            align-items: end;
+            padding-bottom: .15em;
+        }
+
+        .fieldblock3 hr {
+            grid-column: 1 / span 3;
+            width: 100%;
+            border: none;
+            background-color: black;
+            height: 1px;
+            margin: 0;
+            margin-top: .2em;
+            margin-bottom: .1em;
+        }
+
+        .fieldblock5 {
+            display: grid;
+            grid-template-columns: 0fr 1fr 0fr 1fr 0fr;
+            align-items: end;
+            padding-bottom: .15em;
+        }
+
+        #personal {
+            grid-area: personal;
+            display: grid;
+            grid-template:
+                "portrait identity miscellaneous points"
+                "portrait description description points";
+            grid-template-columns: 0fr 1fr 1fr 0fr;
+            grid-gap: .05in;
+        }
+
+        #portrait {
+            grid-area: portrait;
+            display: grid;
+            grid-template:
+                "header"
+                "portrait";
+            grid-template-rows: 0fr auto;
+            grid-template-columns: auto;
+            border: 1px solid black;
+        }
+
+        .portrait {
+            font-size: medium;
+            width: 6.75em;
+            height: 9em;
+            background-image: url(data:image/png;base64,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);
+            background-size: cover;
+        }
+
+        #identity {
+            grid-area: identity;
+        }
+
+        #miscellaneous {
+            grid-area: miscellaneous;
+        }
+
+        #points {
+            grid-area: points;
+        }
+
+        #identity, #miscellaneous, #points {
+            display: grid;
+            grid-template-rows: 0fr 1fr;
+            border: 1px solid black;
+        }
+
+        #primary-attr, #secondary-attr, #pools, #lifting {
+            display: grid;
+            grid-template-rows: 0fr 0fr;
+            border: 1px solid black;
+            flex-grow: 1;
+        }
+
+        #secondary-attr, #location, #encumbrance, #lifting {
+            margin-left: 0.05in;
+        }
+
+        #pools, #lifting {
+            margin-top: 0.05in;
+        }
+
+        #attr-col, #enc-col {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        #attr-row {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        #points .field,
+        #lifting .field,
+        #primary-attr .field,
+        #secondary-attr .field,
+        #pools .field {
+            text-align: right;
+        }
+
+        #description {
+            grid-area: description;
+            display: grid;
+            grid-template:
+                "header header header"
+                "block1 block2 block3";
+            grid-template-rows: 0fr 1fr;
+            border: 1px solid black;
+        }
+
+        #description .header {
+            grid-area: header;
+        }
+
+        #description .fieldblock:nth-child(1n+3) {
+            border-left: 1px solid black;
+        }
+
+        #stats {
+            grid-area: stats;
+            display: flex;
+        }
+
+        #encumbrance {
+            flex-grow: 1;
+            grid-template:
+                "header header header header header"
+                "encmarkerh ench loadh moveh dodgeh"
+                "encmarker enc load move dodge";
+            grid-template-rows: 0fr 0fr 0fr;
+            grid-auto-rows: 0fr;
+            grid-template-columns: 0fr 2fr 1fr 0.5fr 0.5fr;
+        }
+
+        #lifting {
+            flex-grow: 1;
+            grid-template:
+                "header header"
+                "desc lift";
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 0fr 0fr;
+            grid-auto-rows: 0fr;
+        }
+
+        #lifting .header:first-child {
+            grid-area: header;
+        }
+
+        #location {
+            flex-grow: 1;
+            grid-template:
+                "header header header header"
+                "roll where penalty dr";
+            grid-template-rows: 0fr 0fr;
+            grid-auto-rows: 0fr;
+        }
+
+        #encumbrance .header:first-child,
+        #location .header:first-child {
+            grid-area: header;
+            border-bottom: 1px solid lightgray;
+        }
+
+        #encumbrance,
+        #lifting,
+        #location,
+        #reactions,
+        #conditional_modifiers,
+        #melee,
+        #ranged,
+        #advantages,
+        #skills,
+        #spells,
+        #equipment,
+        #other_equipment,
+        #notes {
+            display: grid;
+            border: 1px solid black;
+            align-content: stretch;
+        }
+
+        #reactions,
+        #conditional_modifiers,
+        #melee,
+        #ranged,
+        #advantages,
+        #skills,
+        #spells,
+        #equipment,
+        #other_equipment,
+        #notes {
+            grid-template-rows: repeat(1000, auto) 1fr;
+        }
+
+        #reactions {
+            grid-template-columns: 0fr 1fr;
+            grid-area: reactions;
+        }
+
+        #conditional_modifiers {
+            grid-template-columns: 0fr 1fr;
+            grid-area: conditional_modifiers;
+        }
+
+        #melee {
+            grid-template-columns: 1fr repeat(8, auto);
+            grid-area: melee;
+        }
+
+        #ranged {
+            grid-template-columns: 1fr repeat(10, auto);
+            grid-area: ranged;
+        }
+
+        #advantages {
+            grid-template-columns: 1fr repeat(2, auto);
+            grid-area: advantages;
+        }
+
+        #skills {
+            grid-template-columns: 1fr repeat(4, auto);
+            grid-area: skills;
+        }
+
+        #spells {
+            grid-template-columns: 1fr repeat(10, auto);
+            grid-area: spells;
+        }
+
+        #equipment {
+            grid-template-columns: auto auto 1fr repeat(6, auto);
+            grid-area: equipment;
+        }
+
+        #other_equipment {
+            grid-template-columns: auto 1fr repeat(7, auto);
+            grid-area: other_equipment;
+        }
+
+        #notes {
+            grid-template-columns: 1fr auto auto;
+            grid-area: notes;
+        }
+
+        .points {
+            text-align: right;
+            padding-left: .2em;
+            padding-right: .2em;
+            font-size: 80%;
+            align-self: center;
+        }
+
+        .label {
+            text-align: left;
+            padding-left: .2em;
+            padding-right: .2em;
+            font-size: 80%;
+            white-space: nowrap;
+            align-self: center;
+        }
+
+        .field {
+            margin-right: .2em;
+            font-weight: bold;
+        }
+
+        .field,
+        .desc,
+        .cls,
+        .college,
+        .mana,
+        .mana_maintain,
+        .time,
+        .duration,
+        .sl,
+        .rsl,
+        .qty,
+        .equipped,
+        .uses,
+        .cost,
+        .sum_cost,
+        .weight,
+        .sum_weight,
+        .pts,
+        .ref,
+        .usage,
+        .level,
+        .parry,
+        .block,
+        .damage,
+        .reach,
+        .st,
+        .acc,
+        .range,
+        .rof,
+        .shots,
+        .bulk,
+        .rcl,
+        .load,
+        .loadh,
+        .move,
+        .moveh,
+        .dodge,
+        .dodgeh,
+        .roll,
+        .where,
+        .penalty,
+        .dr,
+        .liftdesc,
+        .lift,
+        .modifier,
+        .situation {
+            padding-left: .2em;
+            padding-right: .2em;
+            border-bottom: 1px solid lightgray;
+        }
+
+        .enc,
+        .ench {
+            padding-left: 0;
+            padding-right: .2em;
+            border-bottom: 1px solid lightgray;
+        }
+
+        .encmarker,
+        .encmarkerh {
+            padding-left: .2em;
+            padding-right: 0;
+            border-bottom: 1px solid lightgray;
+        }
+
+        .load, .move, .dodge, .lift, .dr, .desc, .sl, .rsl, .pts, .ref, .usage, .level, .parry,
+        .block, .damage, .reach, .st, .acc, .range, .rof, .shots, .bulk, .rcl, .cls, .college,
+        .mana, .mana_maintain, .time, .duration, .qty, .uses, .cost, .weight, .sum_cost,
+        .sum_weight {
+            font-weight: bold;
+        }
+
+        .list_note {
+            font-weight: normal;
+        }
+
+        #encumbrance .encmarker:nth-last-child(10n+5),
+        #encumbrance .enc:nth-last-child(10n+4),
+        #encumbrance .load:nth-last-child(10n+3),
+        #encumbrance .move:nth-last-child(10n+2),
+        #encumbrance .dodge:nth-last-child(10n+1),
+        #lifting .liftdesc:nth-last-child(4n+1),
+        #lifting .lift:nth-last-child(4n+2),
+        #location .roll:nth-last-child(8n+4),
+        #location .where:nth-last-child(8n+3),
+        #location .penalty:nth-last-child(8n+2),
+        #location .dr:nth-last-child(8n+1),
+        #reactions .modifier:nth-child(even),
+        #reactions .situation:nth-child(odd),
+        #conditional_modifiers .modifier:nth-child(even),
+        #conditional_modifiers .situation:nth-child(odd),
+        #melee .desc:nth-child(even),
+        #melee .usage:nth-child(odd),
+        #melee .level:nth-child(even),
+        #melee .parry:nth-child(odd),
+        #melee .block:nth-child(even),
+        #melee .damage:nth-child(odd),
+        #melee .reach:nth-child(even),
+        #melee .st:nth-child(odd),
+        #ranged .desc:nth-child(even),
+        #ranged .usage:nth-child(odd),
+        #ranged .level:nth-child(even),
+        #ranged .acc:nth-child(odd),
+        #ranged .damage:nth-child(even),
+        #ranged .range:nth-child(odd),
+        #ranged .rof:nth-child(even),
+        #ranged .shots:nth-child(odd),
+        #ranged .bulk:nth-child(even),
+        #ranged .rcl:nth-child(odd),
+        #ranged .st:nth-child(even),
+        #advantages .desc:nth-child(even),
+        #advantages .pts:nth-child(odd),
+        #advantages .ref:nth-child(even),
+        #skills .desc:nth-child(even),
+        #skills .sl:nth-child(odd),
+        #skills .rsl:nth-child(even),
+        #skills .pts:nth-child(odd),
+        #skills .ref:nth-child(even),
+        #spells .desc:nth-child(even),
+        #spells .cls:nth-child(odd),
+        #spells .college:nth-child(even),
+        #spells .mana:nth-child(odd),
+        #spells .mana_maintain:nth-child(even),
+        #spells .time:nth-child(odd),
+        #spells .duration:nth-child(even),
+        #spells .sl:nth-child(odd),
+        #spells .rsl:nth-child(even),
+        #spells .pts:nth-child(odd),
+        #spells .ref:nth-child(even),
+        #equipment .equipped:nth-child(even),
+        #equipment .qty:nth-child(odd),
+        #equipment .desc:nth-child(even),
+        #equipment .uses:nth-child(odd),
+        #equipment .cost:nth-child(even),
+        #equipment .weight:nth-child(odd),
+        #equipment .sum_cost:nth-child(even),
+        #equipment .sum_weight:nth-child(odd),
+        #equipment .ref:nth-child(even),
+        #other_equipment .qty:nth-child(even),
+        #other_equipment .desc:nth-child(odd),
+        #other_equipment .uses:nth-child(even),
+        #other_equipment .cost:nth-child(odd),
+        #other_equipment .weight:nth-child(even),
+        #other_equipment .sum_cost:nth-child(odd),
+        #other_equipment .sum_weight:nth-child(even),
+        #other_equipment .ref:nth-child(odd),
+        #notes .desc:nth-child(even),
+        #notes .ref:nth-child(odd) {
+            background-color: #e8ffe8;
+        }
+
+        #equipment .desc,
+        #other_equipment .desc,
+        .cls,
+        .college,
+        .mana,
+        .mana_maintain,
+        .time,
+        .duration,
+        .sl,
+        .rsl,
+        .qty,
+        .uses,
+        .cost,
+        .sum_cost,
+        .weight,
+        .sum_weight,
+        .pts,
+        .ref,
+        .usage,
+        .level,
+        .parry,
+        .block,
+        .damage,
+        .reach,
+        .st,
+        .acc,
+        .range,
+        .rof,
+        .shots,
+        .bulk,
+        .rcl,
+        .load,
+        .loadh,
+        .move,
+        .moveh,
+        .dodge,
+        .dodgeh,
+        .where,
+        .penalty,
+        .dr,
+        .situation {
+            border-left: 1px solid lightgray;
+        }
+
+        .sl,
+        .rsl,
+        .qty,
+        .equipped,
+        .uses,
+        .cost,
+        .sum_cost,
+        .weight,
+        .sum_weight,
+        .pts,
+        .ref,
+        .level,
+        .parry,
+        .block,
+        .reach,
+        .st,
+        .acc,
+        .rof,
+        .shots,
+        .bulk,
+        .rcl,
+        .load,
+        .move,
+        .dodge,
+        .where,
+        .penalty,
+        .dr,
+        .lift,
+        .modifier {
+            text-align: right;
+        }
+
+        .equipped,
+        .roll {
+            text-align: center;
+        }
+
+        .liftdesc,
+        .where {
+            text-align: left;
+        }
+
+        .encmarker,
+        .encmarkerh,
+        .enc,
+        .ench,
+        .load,
+        .loadh,
+        .move,
+        .moveh,
+        .dodge,
+        .dodgeh,
+        .roll,
+        .where,
+        .penalty,
+        .dr,
+        .liftdesc,
+        .lift,
+        .modifier {
+            white-space: nowrap;
+        }
+
+        #lifting .field,
+        .noedit {
+            white-space: nowrap;
+            border: none;
+        }
+
+        .header,
+        #reactions .header,
+        #conditional_modifiers .header,
+        #melee .header,
+        #ranged .header,
+        #equipment .header,
+        #other_equipment .header {
+            background-color: black;
+            border-bottom: 1px solid black;
+            color: white;
+            text-align: center;
+            font-size: 80%;
+        }
+
+        #location .header:nth-last-child(8n+4),
+        #location .header:nth-last-child(8n+3),
+        #location .header:nth-last-child(8n+2),
+        #location .header:nth-last-child(8n+1) {
+            background-color: black;
+        }
+
+        #encumbrance > div:nth-last-child(-n+5),
+        #lifting > div:nth-last-child(-n+2),
+        #location > div:nth-last-child(-n+4) {
+            border-bottom: none;
+        }
+
+        #reactions > div:nth-last-child(-n+3),
+        #conditional_modifiers > div:nth-last-child(-n+3),
+        #melee > div:nth-last-child(-n+9),
+        #ranged > div:nth-last-child(-n+11),
+        #advantages > div:nth-last-child(-n+3),
+        #skills > div:nth-last-child(-n+5),
+        #spells > div:nth-last-child(-n+11),
+        #equipment > div:nth-last-child(-n+9),
+        #other_equipment > div:nth-last-child(-n+9),
+        #notes > div:nth-last-child(-n+3) {
+            border-bottom: none;
+            grid-row: 1001;
+        }
+
+        .indent1 {
+            padding-left: 1em;
+        }
+
+        .indent2 {
+            padding-left: 2em;
+        }
+
+        .indent3 {
+            padding-left: 3em;
+        }
+
+        .indent4 {
+            padding-left: 4em;
+        }
+
+        .indent5 {
+            padding-left: 5em;
+        }
+
+        .indent6 {
+            padding-left: 6em;
+        }
+
+        .indent7 {
+            padding-left: 7em;
+        }
+
+        .indent8 {
+            padding-left: 8em;
+        }
+
+        .indent9 {
+            padding-left: 9em;
+        }
+
+        .satisfiedN {
+            color: red;
+        }
+
+        #encumbrance .current:nth-last-child(10n+5),
+        #encumbrance .current:nth-last-child(10n+4),
+        #encumbrance .current:nth-last-child(10n+3),
+        #encumbrance .current:nth-last-child(10n+2),
+        #encumbrance .current:nth-last-child(10n+1),
+        .current {
+            background-color: lightgoldenrodyellow;
+        }
+
+        .list_note {
+            font-size: 80%;
+        }
+
+        .encmarker.current:after {
+            content: '•';
+        }
+
+        .enc0:after {
+            content: 'None (0)';
+        }
+
+        .enc1:after {
+            content: 'Light (1)';
+        }
+
+        .enc2:after {
+            content: 'Medium (2)';
+        }
+
+        .enc3:after {
+            content: 'Heavy (3)';
+        }
+
+        .enc4:after {
+            content: 'X-heavy (4)';
+        }
+    </style>
+</head>
+
+<body>
+    <div id="sheet">
+        <div id="personal">
+            <div id="portrait">
+                <div class="header">Portrait</div>
+                <div class="portrait"></div>
+            </div>
+            <div id="identity">
+                <div class="header">Identity</div>
+                <div class="fieldblock">
+                    <div class="label">Name:</div>
+                    <div class="field">Jerrell Natalizio</div>
+                    <div class="label">Title:</div>
+                    <div class="field"></div>
+                    <div class="label">Organization:</div>
+                    <div class="field"></div>
+                </div>
+            </div>
+            <div id="miscellaneous">
+                <div class="header">Miscellaneous</div>
+                <div class="fieldblock">
+                    <div class="label">Created:</div>
+                    <div class="field">Jun 15, 2021 at 8:54 PM</div>
+                    <div class="label">Modified:</div>
+                    <div class="field">Jun 15, 2021 at 8:54 PM</div>
+                    <div class="label">Player:</div>
+                    <div class="field">Cassimiro</div>
+                </div>
+            </div>
+            <div id="description">
+                <div class="header">Description</div>
+                <div class="fieldblock">
+                    <div class="label">Gender:</div>
+                    <div class="field">Male</div>
+                    <div class="label">Age:</div>
+                    <div class="field">23</div>
+                    <div class="label">Birthday:</div>
+                    <div class="field">Sep 14</div>
+                    <div class="label">Religion:</div>
+                    <div class="field"></div>
+                </div>
+                <div class="fieldblock">
+                    <div class="label">Height:</div>
+                    <div class="field">5' 6&quot;</div>
+                    <div class="label">Weight:</div>
+                    <div class="field">85 kg</div>
+                    <div class="label">Size:</div>
+                    <div class="field">+0</div>
+                    <div class="label">TL:</div>
+                    <div class="field">8</div>
+                </div>
+                <div class="fieldblock">
+                    <div class="label">Hair:</div>
+                    <div class="field">Blond, Curly, Short</div>
+                    <div class="label">Eyes:</div>
+                    <div class="field">Brown</div>
+                    <div class="label">Skin:</div>
+                    <div class="field">Tan</div>
+                    <div class="label">Hand:</div>
+                    <div class="field">Right</div>
+                </div>
+            </div>
+            <div id="points">
+                <div class="header">50 Points</div>
+                <div class="fieldblock">
+                    <div class="field">0</div>
+                    <div class="label">Unspent</div>
+                    <div class="field noedit">0</div>
+                    <div class="label">Race</div>
+                    <div class="field noedit">24</div>
+                    <div class="label">Attributes</div>
+                    <div class="field noedit">30</div>
+                    <div class="label">Advantages</div>
+                    <div class="field noedit">-50</div>
+                    <div class="label">Disadvantages</div>
+                    <div class="field noedit">0</div>
+                    <div class="label">Quirks</div>
+                    <div class="field noedit">46</div>
+                    <div class="label">Skills</div>
+                    <div class="field noedit">0</div>
+                    <div class="label">Spells</div>
+                </div>
+            </div>
+        </div>
+        <div id="stats">
+            <div id="attr-col">
+                <div id="attr-row">
+                    <div id="primary-attr">
+                        <div class="header">Primary Attributes</div>
+                        <div class="fieldblock3">
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">10</div>
+                            <div class="label">Strength (ST)</div>
+                            
+                            <div class="points">[20]</div>
+                            <div class="field">11</div>
+                            <div class="label">Dexterity (DX)</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">10</div>
+                            <div class="label">Intelligence (IQ)</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">10</div>
+                            <div class="label">Health (HT)</div>
+                            
+                            <hr>
+                            <div class="points"></div>
+                            <div class="field noedit">1d-2</div>
+                            <div class="label">Basic Thrust</div>
+                            <div class="points"></div>
+                            <div class="field noedit">1d</div>
+                            <div class="label">Basic Swing</div>
+                        </div>
+                    </div>
+                    <div id="secondary-attr">
+                        <div class="header">Secondary Attributes</div>
+                        <div class="fieldblock3">
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">10</div>
+                            <div class="label">Will</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">12</div>
+                            <div class="label">Fright Check</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">10</div>
+                            <div class="label">Perception (Per)</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">10</div>
+                            <div class="label">Vision</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">10</div>
+                            <div class="label">Hearing</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">10</div>
+                            <div class="label">Taste &amp; Smell</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">10</div>
+                            <div class="label">Touch</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">5.25</div>
+                            <div class="label">Basic Speed</div>
+                            
+                            <div class="points">[0]</div>
+                            <div class="field">5</div>
+                            <div class="label">Basic Move</div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div id="pools">
+                    <div class="header">Point Pools</div>
+                    <div class="fieldblock5">
+                        
+                        <div class="points">[0]</div>
+                        <div class="field">10</div>
+                        <div class="label">of</div>
+                        <div class="field">10</div>
+                        <div class="label">Fatigue Points (FP)</div>
+                        
+                        <div class="points">[4]</div>
+                        <div class="field">12</div>
+                        <div class="label">of</div>
+                        <div class="field">12</div>
+                        <div class="label">Hit Points (HP)</div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div id="location">
+                <div class="header">Hit Location</div>
+                <div class="roll header">Roll</div>
+                <div class="where header">Where</div>
+                <div class="penalty header">Penalty</div>
+                <div class="dr header">DR</div>
+                
+                <div class="roll">-</div>
+                <div class="where">Eyes</div>
+                <div class="penalty">-9</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">3-4</div>
+                <div class="where">Skull</div>
+                <div class="penalty">-7</div>
+                <div class="dr">2</div>
+                
+                <div class="roll">5</div>
+                <div class="where">Face</div>
+                <div class="penalty">-5</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">6-7</div>
+                <div class="where">Right Leg</div>
+                <div class="penalty">-2</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">8</div>
+                <div class="where">Right Arm</div>
+                <div class="penalty">-2</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">9-10</div>
+                <div class="where">Torso</div>
+                <div class="penalty">0</div>
+                <div class="dr">8</div>
+                
+                <div class="roll">11</div>
+                <div class="where">Groin</div>
+                <div class="penalty">-3</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">12</div>
+                <div class="where">Left Arm</div>
+                <div class="penalty">-2</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">13-14</div>
+                <div class="where">Left Leg</div>
+                <div class="penalty">-2</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">15</div>
+                <div class="where">Hand</div>
+                <div class="penalty">-4</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">16</div>
+                <div class="where">Foot</div>
+                <div class="penalty">-4</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">17-18</div>
+                <div class="where">Neck</div>
+                <div class="penalty">-5</div>
+                <div class="dr">0</div>
+                
+                <div class="roll">-</div>
+                <div class="where">Vitals</div>
+                <div class="penalty">-3</div>
+                <div class="dr">8</div>
+                
+            </div>
+            <div id="enc-col">
+                <div id="encumbrance">
+                    <div class="header">Encumbrance, Move &amp; Dodge</div>
+                    <div class="encmarkerh header"></div>
+                    <div class="ench header">Level</div>
+                    <div class="loadh header">Max Load</div>
+                    <div class="moveh header">Move</div>
+                    <div class="dodgeh header">Dodge</div>
+                    
+                    <div class="encmarker current"></div>
+                    <div class="enc current enc0"></div>
+                    <div class="load current">10 kg</div>
+                    <div class="move current">5</div>
+                    <div class="dodge current">9</div>
+                    
+                    <div class="encmarker "></div>
+                    <div class="enc  enc1"></div>
+                    <div class="load ">20 kg</div>
+                    <div class="move ">4</div>
+                    <div class="dodge ">8</div>
+                    
+                    <div class="encmarker "></div>
+                    <div class="enc  enc2"></div>
+                    <div class="load ">30 kg</div>
+                    <div class="move ">3</div>
+                    <div class="dodge ">7</div>
+                    
+                    <div class="encmarker "></div>
+                    <div class="enc  enc3"></div>
+                    <div class="load ">60 kg</div>
+                    <div class="move ">2</div>
+                    <div class="dodge ">6</div>
+                    
+                    <div class="encmarker "></div>
+                    <div class="enc  enc4"></div>
+                    <div class="load ">100 kg</div>
+                    <div class="move ">1</div>
+                    <div class="dodge ">5</div>
+                    
+                </div>
+                <div id="lifting">
+                    <div class="header">Lifting &amp; Moving Things</div>
+                    <div class="lift">10 kg</div>
+                    <div class="liftdesc">Basic Lift</div>
+                    <div class="lift">20 kg</div>
+                    <div class="liftdesc">One-Handed Lift</div>
+                    <div class="lift">80 kg</div>
+                    <div class="liftdesc">Two-Handed Lift</div>
+                    <div class="lift">120 kg</div>
+                    <div class="liftdesc">Shove &amp; Knock Over</div>
+                    <div class="lift">240 kg</div>
+                    <div class="liftdesc">Running Shove &amp; Knock Over</div>
+                    <div class="lift">150 kg</div>
+                    <div class="liftdesc">Carry on Back</div>
+                    <div class="lift">500 kg</div>
+                    <div class="liftdesc">Shift Slightly</div>
+                </div>
+            </div>
+        </div>
+        <div id="reactions">
+            <div class="modifier header">Modifier</div>
+            <div class="situation header">Reaction</div>
+            <div></div>
+
+            
+            <div class="modifier">+1</div>
+            <div class="situation">from sapient being with whom you actively interact (converse, lecture, etc.)</div>
+            <div></div>
+            
+            <div class="modifier">-2</div>
+            <div class="situation">from experienced NPCs</div>
+            <div></div>
+            
+            <div class="modifier">+2</div>
+            <div class="situation">from young or naive individuals who believe you are as good as you say you are</div>
+            <div></div>
+            
+            <div class="modifier">+1</div>
+            <div class="situation">from others</div>
+            <div></div>
+            
+            <div class="modifier">+1</div>
+            <div class="situation">to Influence rolls</div>
+            <div></div>
+            
+        </div>
+        <div id="conditional_modifiers">
+            <div class="modifier header">Modifier</div>
+            <div class="situation header">Condition</div>
+            <div></div>
+
+            
+        </div>
+        <div id="melee">
+            <div class="desc header">Melee Weapons</div>
+            <div class="usage header">Usage</div>
+            <div class="level header">Lvl</div>
+            <div class="parry header">Parry</div>
+            <div class="block header">Block</div>
+            <div class="damage header">Damage</div>
+            <div class="reach header">Reach</div>
+            <div class="st header">ST</div>
+            <div></div>
+
+            
+            <div class="desc">Natural Attacks
+                <div class="list_note"></div>
+            </div>
+            <div class="usage">Bite</div>
+            <div class="level">13</div>
+            <div class="parry">No</div>
+            <div class="block">No</div>
+            <div class="damage">1d-2 cr</div>
+            <div class="reach">C</div>
+            <div class="st"></div>
+            <div></div>
+            
+            <div class="desc">Natural Attacks
+                <div class="list_note"></div>
+            </div>
+            <div class="usage">Kick</div>
+            <div class="level">11</div>
+            <div class="parry">No</div>
+            <div class="block"></div>
+            <div class="damage">1d-1 cr</div>
+            <div class="reach">C,1</div>
+            <div class="st"></div>
+            <div></div>
+            
+            <div class="desc">Natural Attacks
+                <div class="list_note"></div>
+            </div>
+            <div class="usage">Punch</div>
+            <div class="level">13</div>
+            <div class="parry">10</div>
+            <div class="block"></div>
+            <div class="damage">1d-2 cr</div>
+            <div class="reach">C</div>
+            <div class="st"></div>
+            <div></div>
+            
+        </div>
+        <div id="ranged">
+            <div class="desc header">Ranged Weapons</div>
+            <div class="usage header">Usage</div>
+            <div class="level header">Lvl</div>
+            <div class="acc header">Acc</div>
+            <div class="damage header">Damage</div>
+            <div class="range header">Range</div>
+            <div class="rof header">RoF</div>
+            <div class="shots header">Shots</div>
+            <div class="bulk header">Bulk</div>
+            <div class="rcl header">Rcl</div>
+            <div class="st header">ST</div>
+
+            
+            <div class="desc">Auto Pistol, 9mm
+                <div class="list_note"></div>
+            </div>
+            <div class="usage"></div>
+            <div class="level">18</div>
+            <div class="acc">2</div>
+            <div class="damage">2d+2 pi</div>
+            <div class="range">150/1900</div>
+            <div class="rof">3</div>
+            <div class="shots">18+1(3)</div>
+            <div class="bulk">-2</div>
+            <div class="rcl">2</div>
+            <div class="st">9</div>
+            
+        </div>
+        <div id="advantages">
+            <div class="desc header">Advantages, Disadvantages, Perks &amp; Quirks</div>
+            <div class="pts header">Pts</div>
+            <div class="ref header"><i class="fas fa-bookmark"></i></div>
+
+            
+            <div class="desc indent0 satisfiedY">Natural Attacks
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">0</div>
+            <div class="ref satisfiedY">B271</div>
+            
+            <div class="desc indent0 satisfiedY">Appearance
+                <div class="list_note satisfiedY">Attractive</div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">4</div>
+            <div class="ref satisfiedY">B21</div>
+            
+            <div class="desc indent0 satisfiedY">Overconfidence
+                <div class="list_note satisfiedY">CR: 12 (Resist Quite Often)</div>
+                <div class="list_note satisfiedY">You must make a self-control roll any time the GM feels you show an unreasonable degree of caution. If you fail, you must go ahead as though you were able to handle the situation!</div>
+            </div>
+            <div class="pts satisfiedY">-5</div>
+            <div class="ref satisfiedY">B148</div>
+            
+            <div class="desc indent0 satisfiedY">Natural Attacks
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">0</div>
+            <div class="ref satisfiedY">B271</div>
+            
+            <div class="desc indent0 satisfiedY">Contact (Namorada)
+                <div class="list_note satisfiedY">Effective skill (12); Appears quite often (12-); Completely reliable</div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">6</div>
+            <div class="ref satisfiedY">B44</div>
+            
+            <div class="desc indent0 satisfiedY">Frightens Animals
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">-10</div>
+            <div class="ref satisfiedY">B137</div>
+            
+            <div class="desc indent0 satisfiedY">Missing Digit
+                <div class="list_note satisfiedY">Thumb (Gives -5 DX with that hand (only))</div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">-5</div>
+            <div class="ref satisfiedY">B144</div>
+            
+            <div class="desc indent0 satisfiedY">Trademark (D6 na cena)
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">-5</div>
+            <div class="ref satisfiedY">B159</div>
+            
+            <div class="desc indent0 satisfiedY">Guilt Complex
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">-5</div>
+            <div class="ref satisfiedY">B137</div>
+            
+            <div class="desc indent0 satisfiedY">Charisma 1
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">5</div>
+            <div class="ref satisfiedY">B41</div>
+            
+            <div class="desc indent0 satisfiedY">Combat Reflexes
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY">Never freeze; +6 on all IQ rolls to wake up or to recover from surprise or mental stun; Your side gets +1 to initiative rolls (+2 if you're the leader)</div>
+            </div>
+            <div class="pts satisfiedY">15</div>
+            <div class="ref satisfiedY">B43</div>
+            
+            <div class="desc indent0 satisfiedY">Squeamish
+                <div class="list_note satisfiedY">CR: 12 (Resist Quite Often)</div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="pts satisfiedY">-10</div>
+            <div class="ref satisfiedY">B156</div>
+            
+            <div class="desc indent0 satisfiedY">Bloodlust
+                <div class="list_note satisfiedY">CR: 12 (Resist Quite Often)</div>
+                <div class="list_note satisfiedY">You must make a self-control roll whenever you need to accept a surrender, evade a sentry, take a prisoner, etc.</div>
+            </div>
+            <div class="pts satisfiedY">-10</div>
+            <div class="ref satisfiedY">B125</div>
+            
+        </div>
+        <div id="skills">
+            <div class="desc header">Skills</div>
+            <div class="sl header">SL</div>
+            <div class="rsl header">RSL</div>
+            <div class="pts header">Pts</div>
+            <div class="ref header"><i class="fas fa-bookmark"></i></div>
+
+            
+            <div class="desc indent0 satisfiedY">Brawling
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="sl satisfiedY">13</div>
+            <div class="rsl satisfiedY">DX+2</div>
+            <div class="pts satisfiedY">4</div>
+            <div class="ref satisfiedY">B182</div>
+            
+            <div class="desc indent0 satisfiedY">Fast-Draw (Knife)
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="sl satisfiedY">13</div>
+            <div class="rsl satisfiedY">DX+2</div>
+            <div class="pts satisfiedY">2</div>
+            <div class="ref satisfiedY">B194</div>
+            
+            <div class="desc indent0 satisfiedY">Fast-Draw (Pistol)
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="sl satisfiedY">14</div>
+            <div class="rsl satisfiedY">DX+3</div>
+            <div class="pts satisfiedY">4</div>
+            <div class="ref satisfiedY">B194</div>
+            
+            <div class="desc indent0 satisfiedY">Knife
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="sl satisfiedY">13</div>
+            <div class="rsl satisfiedY">DX+2</div>
+            <div class="pts satisfiedY">4</div>
+            <div class="ref satisfiedY">B208</div>
+            
+            <div class="desc indent0 satisfiedY">Guns/TL8 (Pistol)
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="sl satisfiedY">18</div>
+            <div class="rsl satisfiedY">DX+7</div>
+            <div class="pts satisfiedY">24</div>
+            <div class="ref satisfiedY">B198</div>
+            
+            <div class="desc indent0 satisfiedY">Driving/TL8 (Automobile)
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="sl satisfiedY">12</div>
+            <div class="rsl satisfiedY">DX+1</div>
+            <div class="pts satisfiedY">4</div>
+            <div class="ref satisfiedY">B188</div>
+            
+            <div class="desc indent0 satisfiedY">Driving/TL8 (Motorcycle)
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="sl satisfiedY">12</div>
+            <div class="rsl satisfiedY">DX+1</div>
+            <div class="pts satisfiedY">4</div>
+            <div class="ref satisfiedY">B188</div>
+            
+        </div>
+        <div id="spells">
+            <div class="desc header">Spells</div>
+            <div class="cls header">Class</div>
+            <div class="college header">College</div>
+            <div class="mana header">Cost</div>
+            <div class="mana_maintain header">Maintain</div>
+            <div class="time header">Time</div>
+            <div class="duration header">Duration</div>
+            <div class="sl header">SL</div>
+            <div class="rsl header">RSL</div>
+            <div class="pts header">Pts</div>
+            <div class="ref header"><i class="fas fa-bookmark"></i></div>
+
+            
+        </div>
+        <div id="equipment">
+            <div class="equipped header"><i class="fas fa-check-circle"></i></div>
+            <div class="qty header"><i class="fab fa-slack-hash"></i></div>
+            <div class="desc header">Equipment (2 kg; $1,200)</div>
+            <div class="uses header">Uses</div>
+            <div class="cost header">$</div>
+            <div class="weight header"><i class="fas fa-weight-hanging"></i></div>
+            <div class="sum_cost header">∑ $</div>
+            <div class="sum_weight header">∑ <i class="fas fa-weight-hanging"></i></div>
+            <div class="ref header"><i class="fas fa-bookmark"></i></div>
+
+            
+            <div class="equipped satisfiedY"><i class="fas fa-check-circle"></i></div>
+            <div class="qty satisfiedY">1</div>
+            <div class="desc indent0 satisfiedY">Ballistic Vest
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="uses satisfiedY">0</div>
+            <div class="cost satisfiedY">400</div>
+            <div class="weight satisfiedY">1 kg</div>
+            <div class="sum_cost satisfiedY">400</div>
+            <div class="sum_weight satisfiedY">1 kg</div>
+            <div class="ref satisfiedY">B284</div>
+            
+            <div class="equipped satisfiedY"><i class="fas fa-check-circle"></i></div>
+            <div class="qty satisfiedY">1</div>
+            <div class="desc indent0 satisfiedY">Auto Pistol, 9mm
+                <div class="list_note satisfiedY"></div>
+                <div class="list_note satisfiedY"></div>
+            </div>
+            <div class="uses satisfiedY">0</div>
+            <div class="cost satisfiedY">800</div>
+            <div class="weight satisfiedY">1 kg</div>
+            <div class="sum_cost satisfiedY">800</div>
+            <div class="sum_weight satisfiedY">1 kg</div>
+            <div class="ref satisfiedY">B278</div>
+            
+        </div>
+        <div id="other_equipment">
+            <div class="qty header"><i class="fab fa-slack-hash"></i></div>
+            <div class="desc header">Other Equipment ($0)</div>
+            <div class="uses header">Uses</div>
+            <div class="cost header">$</div>
+            <div class="weight header"><i class="fas fa-weight-hanging"></i></div>
+            <div class="sum_cost header">∑ $</div>
+            <div class="sum_weight header">∑ <i class="fas fa-weight-hanging"></i></div>
+            <div class="ref header"><i class="fas fa-bookmark"></i></div>
+            <div></div>
+
+            
+        </div>
+        <div id="notes">
+            <div class="desc header">Notes</div>
+            <div class="ref header"><i class="fas fa-bookmark"></i></div>
+            <div></div>
+
+            
+        </div>
+    </div>
+    <div id="footer">GCS is copyrighted ©1998-2021 by Richard A. Wilkes • All rights reserved •
+        <a href="https://gurpscharactersheet.com">gurpscharactersheet.com</a>
+    </div>
+</body>
+
+</html>

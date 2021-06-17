@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!--
+  NPC Record Card template by Steve Jackson Games.
+  Implemented by Pizza for use with Richard A. Wilkes' GCS.
+-->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>NPC Card</title>
+    <style>
+      body {
+        font-size: 9pt;
+      }
+      #border {
+        width: 5in;
+        height: 3in;
+        border-style: solid;
+        border-width: 2px;
+        margin: 0.05in;
+        text-overflow: ellipsis;
+        overflow-y: hidden;
+      }
+      #basic_damage_title{
+        text-align: center;
+        width: inherit;
+      }
+      .name, .appearance, .will_per, .speed_move, .encumbrance, .defenses, .reaction_points, .advantages, .skills, .weapons, .basic_attributes tr, .name_row{
+        padding-bottom: 0.05in;
+      }
+      .weapon{
+        padding-top:0.05in;
+      }
+      .b_att{
+        padding-right: 0.07in;
+        font-weight: bold;
+      }
+      .slanted{
+        transform: rotate(-75deg);
+      }
+      .dr table{
+        table-layout: fixed;
+        width: 100% ;
+      }
+      .dr_value{
+        border-style: solid;
+        border-width: 1px;
+        text-align: center;
+        vertical-align: middle;
+        height: 0.19in;
+      }
+      .smaller{
+        font-size: 7pt;
+        line-height: 1.0;
+      }
+      .enc_remove, .Eye, .Face, .Vitals, .Groin, .Right, .Neck{
+        display: none;
+      }
+      .slanted.Left.Leg span, .slanted.Left.Arm span, .slanted.Hand span, .slanted.Skull span, .slanted.Foot span{
+        display: none;
+      }
+      .slanted.Skull::after{
+        content: "Head";
+      }
+      .slanted.Left.Leg::after{
+        content: "Legs";
+      }
+      .slanted.Left.Arm::after{
+        content: "Arms";
+      }
+      .slanted.Hand::after{
+        content: "Hands";
+      }
+      .slanted.Foot::after{
+        content: "Feet";
+      }
+      .slanted{
+        width: 13%;
+      }
+      .current{
+        display: inline;
+      }
+      .name_row {
+        height: 0.2in;
+      }
+      .lift_sm{
+        padding-bottom: 0.1in;
+      }
+      #left_column{
+        width: 1.8in;
+        vertical-align: text-top;
+      }
+      #right_column{
+        vertical-align: text-top;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="border">
+      <table id="contents">
+        <tr>
+          <td id="left_column">
+            <div class="name">
+              <b>Valentin Mcgarrah</b>
+            </div>
+            <div class="appearance smaller">
+              Skin: Pale; Eyes: Brown; Hair: Black, Wavy, Medium
+            </div>
+            <table class="basic_attributes">
+              <tr>
+                <td><b>10</b></td>
+                <td class="b_att">ST</td>
+                <td>HP: <b>10</b> ______</td>
+              </tr>
+              <tr>
+                <td><b>10</b></td>
+                <td class="b_att">DX</td>
+                <td><i>Thrust</i>: 1d-2</td>
+              </tr>
+              <tr>
+                <td><b>10</b></td>
+                <td class="b_att">IQ</td>
+                <td><i>Swing</i>: 1d</td>
+              </tr>
+              <tr>
+                <td><b>10</b></td>
+                <td class="b_att">HT</td>
+                <td>FP: <b>10</b> ______</td>
+              </tr>
+            </table>
+            <div class="will_per">
+              Will <b>10</b>  Per <b>10</b>
+            </div>
+            <div class="speed_move">
+              Basic Speed <b>5</b>  Move <b>5</b>
+            </div>
+
+            <div class="encumbrance">
+              Encumbrance <b><span class="enc_remove ">None (0)</span><span class="enc_remove current">&#8226; Light (1)</span><span class="enc_remove ">Medium (2)</span><span class="enc_remove ">Heavy (3)</span><span class="enc_remove ">X-Heavy (4)</span></b>
+            </div>
+
+            <div class="defenses">
+              Dodge <b>7</b>  Parry <b>8</b>  Block <b>-</b>
+            </div>
+            <div class="lift_sm">
+              Basic Lift <b>20 lb</b> SM <b>+0</b>
+            </div>
+
+            <div class="dr">
+              <table>
+                <tr class="name_row">
+                  <td></td>
+                  
+                  <td class="slanted smaller Eyes"><span>Eyes</span></td>
+                  
+                  <td class="slanted smaller Skull"><span>Skull</span></td>
+                  
+                  <td class="slanted smaller Face"><span>Face</span></td>
+                  
+                  <td class="slanted smaller Right Leg"><span>Right Leg</span></td>
+                  
+                  <td class="slanted smaller Right Arm"><span>Right Arm</span></td>
+                  
+                  <td class="slanted smaller Torso"><span>Torso</span></td>
+                  
+                  <td class="slanted smaller Groin"><span>Groin</span></td>
+                  
+                  <td class="slanted smaller Left Arm"><span>Left Arm</span></td>
+                  
+                  <td class="slanted smaller Left Leg"><span>Left Leg</span></td>
+                  
+                  <td class="slanted smaller Hand"><span>Hand</span></td>
+                  
+                  <td class="slanted smaller Foot"><span>Foot</span></td>
+                  
+                  <td class="slanted smaller Neck"><span>Neck</span></td>
+                  
+                  <td class="slanted smaller Vitals"><span>Vitals</span></td>
+                  
+                </tr>
+                <tr>
+                  <td>DR</td>
+                  
+                  <td class="dr_value Eyes">0</td>
+                  
+                  <td class="dr_value Skull">2</td>
+                  
+                  <td class="dr_value Face">0</td>
+                  
+                  <td class="dr_value Right Leg">0</td>
+                  
+                  <td class="dr_value Right Arm">0</td>
+                  
+                  <td class="dr_value Torso">8</td>
+                  
+                  <td class="dr_value Groin">0</td>
+                  
+                  <td class="dr_value Left Arm">0</td>
+                  
+                  <td class="dr_value Left Leg">0</td>
+                  
+                  <td class="dr_value Hand">0</td>
+                  
+                  <td class="dr_value Foot">0</td>
+                  
+                  <td class="dr_value Neck">0</td>
+                  
+                  <td class="dr_value Vitals">8</td>
+                  
+                </tr>
+              </table>
+            </div>
+
+
+          </td>
+          <td id="right_column">
+            <div class="reaction_points">
+              Reaction +/- _________ Point Total <b>50</b>
+            </div>
+            <div class="advantages">
+              Advantages, Disadvantages, Quirks: <span class="smaller">Language: Portugu&#234;s , Language: Italiano , Absent-Mindedness, Language: Alem&#227;o, Impulsiveness, Language: Espanhol, Stuttering, Mild Shyness, Stubbornness, Trademark (Only Headshot), Natural Attacks, Language: Ingl&#234;s, Telescopic Vision 1, Flight, </span>
+            </div>
+            <div class="skills">
+              Skills: <span class="smaller">Guns/TL8 (Rifle)-<b>21</b>, Knife-<b>12</b>, Guns/TL8 (Pistol)-<b>19</b>, Fast-Draw (Sniper)-<b>11</b>, Fast-Draw/TL8 (Ammo)-<b>12</b>, Guns/TL8 (Shotgun)-<b>19</b>, Guns/TL8 (Submachine Gun)-<b>19</b>, Guns/TL8 (Musket)-<b>19</b>, Guns/TL8 (Light Machine Gun)-<b>19</b>, </span>
+
+            </div>
+            <div class="weapons">
+              Weapon Statistics:
+              <div class="smaller weapon">Natural Attacks <i>Bite</i>: <b>1d-3 cr</b></div><div class="smaller weapon">Natural Attacks <i>Kick</i>: <b>1d-2 cr</b></div><div class="smaller weapon">Natural Attacks <i>Punch</i>: <b>1d-3 cr</b></div>
+              
+              <div class="smaller weapon">
+                Auto Pistol, .40 <i></i>: <b>2d pi+</b>, Acc <b>2</b>, Range <b>150/1900</b>, Bulk <b>-2</b>, Rcl <b>2</b>
+              </div>
+              
+              <div class="smaller weapon">
+                Sniper Rifle, .338 <i></i>: <b>9d+1 pi</b>, Acc <b>6+3</b>, Range <b>1500/5500</b>, Bulk <b>-6</b>, Rcl <b>4</b>
+              </div>
+              
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
